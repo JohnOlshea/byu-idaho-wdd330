@@ -7,7 +7,6 @@ function calculateDiscount(product) {
   const srp = product.SuggestedRetailPrice;
   const final = product.FinalPrice;
   if (!srp || !final || final >= srp) return null;
-
   const amountSaved = (srp - final).toFixed(2);
   const percentOff = Math.round(((srp - final) / srp) * 100);
   return { amountSaved, percentOff };
@@ -16,25 +15,26 @@ function calculateDiscount(product) {
 function productCardTemplate(product) {
   const discount = calculateDiscount(product);
   
-  // Handle both image formats: product.Image vs product.Images.PrimaryLarge
-  const imageSrc = product.Image || product.Images?.PrimaryMedium || product.Images?.PrimaryLarge;
+  const imageSrc = product.Image || product.Images?.PrimaryMedium;
   const brand = product.Brand?.Name || "";
+
+  // MAP ID -> correct detail page
+  const pageMap = {
+    "880RR": "marmot-ajax-3.html",
+    "985RF": "northface-talus-4.html",
+    "985PR": "northface-alpine-3.html",
+    "344YJ": "cedar-ridge-rimrock-2.html",
+  };
+  
+  const detailPage = pageMap[product.Id] || `marmot-ajax-3.html`;
 
   let discountHtml = "";
   if (discount) {
-    discountHtml = `
-      <span class="discount-badge">
-        ${discount.percentOff}% OFF - Save $${discount.amountSaved}
-      </span>
-      <p class="product-card__discount">Was $${product.SuggestedRetailPrice.toFixed(2)}</p>
-    `;
+    discountHtml = `<span class="discount-badge">${discount.percentOff}% OFF</span>`;
   }
 
-  // Flag the card itself if discounted for extra styling
-  const discountedClass = discount ? "product-card--discounted" : "";
-
-  return `<li class="product-card ${discountedClass}">
-    <a href="product_pages/marmot-ajax-3.html">
+  return `<li class="product-card ${discount ? "product-card--discounted" : ""}">
+    <a href="/product_pages/${detailPage}">
       <img src="${imageSrc}" alt="${product.Name}">
       <h3 class="card__brand">${brand}</h3>
       <h2 class="card__name">${product.NameWithoutBrand || product.Name}</h2>
@@ -45,10 +45,7 @@ function productCardTemplate(product) {
 }
 
 async function renderProductList() {
-  const data = await dataSource.getData();
-  // tents.json is an array, backpacks.json is { Result: [...] }
-  const products = Array.isArray(data) ? data : data.Result;
-  
+  const products = await dataSource.getData();
   const html = products.map(productCardTemplate).join("");
   productListElement.innerHTML = html;
 }

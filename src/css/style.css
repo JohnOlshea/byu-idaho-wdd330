@@ -342,3 +342,21 @@ li.product-card.product-card--discounted a img {
   font-size: 1.5em;
   color: var(--secondary-color);
 }
+
+/* Cart footer */
+.hide {
+  display: none;
+}
+
+.cart-footer {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-top: 2px solid var(--primary-color);
+  text-align: right;
+}
+
+.cart-total {
+  font-weight: bold;
+  font-size: var(--large-font);
+}
+
