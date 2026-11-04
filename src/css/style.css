@@ -261,3 +261,42 @@ footer {
   font-size: var(--small-font);
   padding: 1em;
 }
+
+/* Discount indicator */
+.product-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card--discounted {
+  border-color: var(--tertiary-color);
+}
+
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: var(--tertiary-color);
+  color: white;
+  padding: 0.3em 0.6em;
+  font-size: var(--small-font);
+  font-weight: bold;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.product-card__discount {
+  color: #a00;
+  font-size: var(--small-font);
+  text-decoration: line-through;
+  margin: 0.2em 0 !important;
+  padding: 0 0.75rem;
+}
+
+.product-card__price {
+  font-weight: bold;
+}
+
+li.product-card.product-card--discounted a img {
+    min-height: 200px;
+}
