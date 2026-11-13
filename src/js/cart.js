@@ -3,9 +3,29 @@ import { getLocalStorage, setLocalStorage, updateCartCount } from "./utils.mjs";
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
   const items = Array.isArray(cartItems) ? cartItems : [cartItems].filter(Boolean);
+  const listEl = document.querySelector(".product-list");
+  const footerEl = document.querySelector(".cart-footer");
+  const totalEl = document.querySelector(".cart-total");
+
+  // EMPTY CART - show message, hide total
+  if (items.length === 0) {
+    listEl.innerHTML = `<li class="empty-cart">Your cart is empty.</li>`;
+    if (footerEl) footerEl.classList.add("hide");
+    updateCartCount();
+    return;
+  }
+
+  // NOT EMPTY - show items
   const htmlItems = items.map((item) => cartItemTemplate(item));
-  document.querySelector(".product-list").innerHTML = htmlItems.join("");
-  updateCartCount(); 
+  listEl.innerHTML = htmlItems.join("");
+
+  // TOTAL - add up all FinalPrice values
+  // Example: 69.99 + 199.99 = 269.98
+  const total = items.reduce((sum, item) => sum + item.FinalPrice, 0);
+  if (totalEl) totalEl.textContent = `Total: $${total.toFixed(2)}`;
+  if (footerEl) footerEl.classList.remove("hide");
+
+  updateCartCount();
 }
 
 function cartItemTemplate(item) {
