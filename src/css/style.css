@@ -317,3 +317,14 @@ footer {
   font-weight: bold;
   border-radius: 50%;
 }
+
+.hide {
+  display: none;
+}
+
+.cart-footer {
+  text-align: right;
+  padding: 1rem;
+  font-size: 1.2em;
+  font-weight: bold;
+}
