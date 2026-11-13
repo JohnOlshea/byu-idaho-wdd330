@@ -41,3 +41,16 @@ export function renderListWithTemplate(
   const htmlStrings = list.map(templateFn);
   parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
 }
+
+export function updateCartCount() {
+  const cart = getLocalStorage("so-cart");
+  const items = Array.isArray(cart) ? cart : [cart].filter(Boolean);
+  const count = items.length;
+
+  const countEl = document.getElementById("cartCount");
+  if (!countEl) return;
+
+  countEl.textContent = count;
+  // hide bubble when cart is empty, show when > 0
+  countEl.style.display = count > 0 ? "flex" : "none";
+}
