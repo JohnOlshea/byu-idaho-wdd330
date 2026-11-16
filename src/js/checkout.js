@@ -16,7 +16,7 @@ document
   .querySelector("form[name='checkout']")
   .addEventListener("submit", async (e) => {
     e.preventDefault();
-    // Make sure totals are calculated before sending
+    // This line only runs if HTML validation passed
     myCheckout.calculateOrderTotal();
     await myCheckout.checkout(e.target);
   });
