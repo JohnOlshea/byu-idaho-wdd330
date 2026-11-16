@@ -328,3 +328,35 @@ footer {
   font-size: 1.2em;
   font-weight: bold;
 }
+
+.categories {
+  margin-top: 2rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.category-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  list-style: none;
+  margin-top: 1rem;
+  padding: 0;
+}
+
+.category-list a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--dark-grey);
+  font-weight: bold;
+}
+
+.category-list img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}

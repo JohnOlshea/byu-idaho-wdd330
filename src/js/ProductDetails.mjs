@@ -33,7 +33,7 @@ export default class ProductDetails {
       p.NameWithoutBrand;
 
     const img = document.querySelector(".product-detail img");
-    img.src = p.Image;
+    img.src = p.Images.PrimaryLarge;
     img.alt = p.Name;
 
     document.querySelector(".product-card__price").textContent =
