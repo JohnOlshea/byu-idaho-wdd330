@@ -5,10 +5,15 @@ import {
 } from "./utils.mjs";
 
 function cartItemTemplate(item) {
+  // API products: item.Images.PrimaryMedium
+  // Old local JSON products: item.Image
+  // Old cart items already saved in localStorage: item.Image
+  const imageSrc = item.Images?.PrimaryMedium || item.Image || "";
+
   return `<li class="cart-card divider">
   <span class="remove-item" data-id="${item.Id}">X</span>
   <a href="#" class="cart-card__image">
-    <img src="${item.Image}" alt="${item.Name}" />
+    <img src="${imageSrc}" alt="${item.Name}" />
   </a>
   <a href="#">
     <h2 class="card__name">${item.Name}</h2>

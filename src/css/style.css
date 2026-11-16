@@ -360,3 +360,43 @@ footer {
   height: 100px;
   object-fit: contain;
 }
+
+.checkout-btn {
+  display: inline-block;
+  padding: 0.5em 2em;
+  background-color: var(--secondary-color);
+  color: white;
+  text-decoration: none;
+  font-size: var(--large-font);
+  margin-top: 1rem;
+}
+
+.checkout-form {
+  max-width: 500px;
+  margin: 1rem auto;
+  padding: 1rem;
+}
+
+.checkout-form fieldset {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--light-grey);
+}
+
+.checkout-form label {
+  display: block;
+  margin-top: 0.75rem;
+}
+
+.checkout-form input {
+  width: 100%;
+  padding: 0.5em;
+  font-size: 1em;
+}
+
+.order-summary {
+  max-width: 500px;
+  margin: 1rem auto;
+  padding: 1rem;
+  border: 1px solid var(--light-grey);
+}
