@@ -13,6 +13,74 @@
       <section class="products">
         <h2>Review &amp; Place your Order</h2>
       </section>
+
+      <section class="checkout-form">
+        <form name="checkout">
+          <fieldset>
+            <legend>Customer Name</legend>
+            <label for="fname">First Name</label>
+            <input name="fname" id="fname" required />
+
+            <label for="lname">Last Name</label>
+            <input name="lname" id="lname" required />
+          </fieldset>
+
+          <fieldset>
+            <legend>Address</legend>
+            <label for="street">Street Address</label>
+            <input name="street" id="street" required />
+
+            <label for="city">City</label>
+            <input name="city" id="city" required />
+
+            <label for="state">State</label>
+            <input name="state" id="state" required />
+
+            <label for="zip">Zip Code</label>
+            <input
+              name="zip"
+              id="zip"
+              required
+              pattern="[0-9]{5}"
+              title="5-digit zip code"
+            />
+          </fieldset>
+
+          <fieldset>
+            <legend>Payment</legend>
+            <label for="cardNumber">Credit Card Number</label>
+            <input
+              name="cardNumber"
+              id="cardNumber"
+              required
+              value="1234123412341234"
+            />
+
+            <label for="expiration">Expiration Date</label>
+            <input
+              name="expiration"
+              id="expiration"
+              required
+              placeholder="MM/YY"
+              value="12/28"
+            />
+
+            <label for="code">Security Code</label>
+            <input name="code" id="code" required value="123" />
+          </fieldset>
+
+          <button type="submit" id="checkoutSubmit">Checkout</button>
+        </form>
+      </section>
+
+      <section class="order-summary">
+        <h3>Order Summary</h3>
+        <p>Items: <span id="num-items"></span></p>
+        <p>Subtotal: <span id="subtotal"></span></p>
+        <p>Tax: <span id="tax"></span></p>
+        <p>Shipping: <span id="shipping"></span></p>
+        <p><strong>Order Total: <span id="orderTotal"></span></strong></p>
+      </section>
     </main>
     <footer id="main-footer"></footer>
   </body>
