@@ -44,15 +44,21 @@ export function renderListWithTemplate(
 
 export function updateCartCount() {
   const cart = getLocalStorage("so-cart");
-  const items = Array.isArray(cart) ? cart : [cart].filter(Boolean);
-  const count = items.length;
+  const list = Array.isArray(cart) ? cart : cart ? [cart] : [];
+  const totalQty = list.reduce((sum, item) => sum + (item.Quantity || 1), 0);
 
-  const countEl = document.getElementById("cartCount");
-  if (!countEl) return;
+  const badge = document.getElementById("cartCount");
+  if (!badge) return;
 
-  countEl.textContent = count;
-  // hide bubble when cart is empty, show when > 0
-  countEl.style.display = count > 0 ? "flex" : "none";
+  badge.textContent = totalQty;
+
+  // Your CSS uses display:none to hide it, so we must use display to show it
+  // display:flex = show orange circle, display:none = hide it
+  if (totalQty === 0) {
+    badge.style.display = "none";
+  } else {
+    badge.style.display = "flex";
+  }
 }
 
 export function renderWithTemplate(template, parentElement, data, callback) {
@@ -75,8 +81,11 @@ export async function loadHeaderFooter() {
   const headerElement = document.querySelector("#main-header");
   const footerElement = document.querySelector("#main-footer");
 
-  renderWithTemplate(headerTemplate, headerElement, null, updateCartCount);
+  renderWithTemplate(headerTemplate, headerElement);
   renderWithTemplate(footerTemplate, footerElement);
+
+  // Header now exists in the DOM, so NOW it's safe to update the badge
+  updateCartCount();
 }
 
 export function alertMessage(message, scroll = true) {
