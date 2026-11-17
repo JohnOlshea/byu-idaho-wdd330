@@ -63,6 +63,23 @@ export default class ProductDetails {
     document.querySelector(".product__description").innerHTML =
       p.DescriptionHtmlSimple;
 
+    // Discount flag - show Save X% only if product is discounted
+    // FinalPrice < SuggestedRetailPrice means it is on sale
+    const discountEl = document.querySelector(".product-card__discount");
+    if (p.FinalPrice < p.SuggestedRetailPrice) {
+      // Work out how much they save as a percent
+      // e.g. (89.99 - 69.99) / 89.99 = 0.22 -> 22%
+      const discountPercent = Math.round(
+        ((p.SuggestedRetailPrice - p.FinalPrice) /
+          p.SuggestedRetailPrice) *
+          100
+      );
+      discountEl.innerHTML = `<s>$${p.SuggestedRetailPrice}</s> <span class="discount-badge">Save ${discountPercent}%</span>`;
+    } else {
+      // Not on sale - leave it empty so no badge shows
+      discountEl.innerHTML = "";
+    }
+
     document.getElementById("addToCart").dataset.id = p.Id;
     document.title = `Sleep Outside | ${p.Name}`;
   }
