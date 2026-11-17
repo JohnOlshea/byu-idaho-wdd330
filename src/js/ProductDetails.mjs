@@ -1,4 +1,5 @@
 import { getLocalStorage, setLocalStorage, updateCartCount, alertMessage } from "./utils.mjs";
+import ExternalServices from "./ExternalServices.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -12,15 +13,34 @@ export default class ProductDetails {
     this.renderProductDetails();
     document
       .getElementById("addToCart")
-      .addEventListener("click", this.addProductToCart.bind(this));
+      .addEventListener("click", () => this.addProductToCart());
   }
 
   addProductToCart() {
-    const cart = getLocalStorage("so-cart");
-    // getLocalStorage already returns [] if empty, but protect old bad data
-    const items = Array.isArray(cart) ? cart : [cart].filter(Boolean);
-    items.push(this.product);
-    setLocalStorage("so-cart", items);
+    let cart = getLocalStorage("so-cart");
+    // getLocalStorage can return null, a single object, or an array
+    // normalize it to an array so .find() always works
+    if (!cart) cart = [];
+    if (!Array.isArray(cart)) cart = [cart];
+
+    // Make sure every old item has a Quantity (old cart items don't)
+    cart.forEach((item) => {
+      if (!item.Quantity) item.Quantity = 1;
+    });
+
+    // Look for this product already in the cart
+    const existingItem = cart.find((item) => item.Id === this.product.Id);
+
+    if (existingItem) {
+      // Already there -> don't add again, just increase quantity
+      existingItem.Quantity += 1;
+    } else {
+      // Not there yet -> add it with Quantity = 1
+      this.product.Quantity = 1;
+      cart.push(this.product);
+    }
+
+    setLocalStorage("so-cart", cart);
     updateCartCount();
     alertMessage(`${this.product.Name} added to cart!`, false);
   }
@@ -28,7 +48,6 @@ export default class ProductDetails {
   renderProductDetails() {
     const p = this.product;
 
-    // Your HTML uses classes, not IDs - so we select by class
     document.querySelector(".product-detail h3").textContent = p.Brand.Name;
     document.querySelector(".product-detail h2").textContent =
       p.NameWithoutBrand;

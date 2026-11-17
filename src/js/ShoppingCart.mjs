@@ -1,14 +1,11 @@
-import {
-  getLocalStorage,
-  setLocalStorage,
-  renderListWithTemplate,
-} from "./utils.mjs";
+import { getLocalStorage, setLocalStorage, updateCartCount, renderListWithTemplate } from "./utils.mjs";
 
 function cartItemTemplate(item) {
   // API products: item.Images.PrimaryMedium
   // Old local JSON products: item.Image
   // Old cart items already saved in localStorage: item.Image
   const imageSrc = item.Images?.PrimaryMedium || item.Image || "";
+  const quantity = item.Quantity || 1;
 
   return `<li class="cart-card divider">
   <span class="remove-item" data-id="${item.Id}">X</span>
@@ -19,59 +16,49 @@ function cartItemTemplate(item) {
     <h2 class="card__name">${item.Name}</h2>
   </a>
   <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-  <p class="cart-card__quantity">qty: 1</p>
-  <p class="cart-card__price">$${item.FinalPrice}</p>
+  <p class="cart-card__quantity">qty: ${quantity}</p>
+  <p class="cart-card__price">$${(item.FinalPrice * quantity).toFixed(2)}</p>
 </li>`;
 }
 
 export default class ShoppingCart {
-  constructor(listElement) {
-    this.listElement = listElement;
+  constructor(key, parentSelector) {
+    this.key = key;
+    this.parentSelector = parentSelector;
+    this.list = [];
+    this.total = 0;
   }
 
-  async init() {
-    this.renderCartContents();
-    this.listElement.addEventListener("click", (e) => {
-      if (e.target.classList.contains("remove-item")) {
-        this.removeItemFromCart(e.target.dataset.id);
-      }
+  init() {
+    const list = getLocalStorage(this.key);
+    this.list = Array.isArray(list) ? list : list ? [list] : [];
+    this.calculateListTotal(this.list);
+    this.renderCart(this.list);
+    this.setupRemoveListeners();
+  }
+
+  calculateListTotal(list) {
+    const amounts = list.map((item) => {
+      const quantity = item.Quantity || 1;
+      return item.FinalPrice * quantity;
     });
+    this.total = amounts.reduce((sum, amount) => sum + amount, 0);
   }
 
-  getItems() {
-    const cartItems = getLocalStorage("so-cart");
-    return Array.isArray(cartItems) ? cartItems : [cartItems].filter(Boolean);
+  renderCart(list) {
+    const parent = document.querySelector(this.parentSelector);
+    parent.innerHTML = "";
+    renderListWithTemplate(cartItemTemplate, parent, list);
   }
 
-  renderCartContents() {
-    const items = this.getItems();
-    const footerEl = document.querySelector(".cart-footer");
-    const totalEl = document.querySelector(".cart-total");
-
-    if (items.length === 0) {
-      this.listElement.innerHTML = `<li class="empty-cart">Your cart is empty.</li>`;
-      if (footerEl) footerEl.classList.add("hide");
-      return;
-    }
-
-    renderListWithTemplate(
-      cartItemTemplate,
-      this.listElement,
-      items,
-      "afterbegin",
-      true
-    );
-
-    const total = items.reduce((sum, item) => sum + item.FinalPrice, 0);
-    if (totalEl) totalEl.textContent = `Total: $${total.toFixed(2)}`;
-    if (footerEl) footerEl.classList.remove("hide");
-  }
-
-  removeItemFromCart(id) {
-    const items = this.getItems();
-    const index = items.findIndex((item) => item.Id === id);
-    if (index > -1) items.splice(index, 1);
-    setLocalStorage("so-cart", items);
-    this.renderCartContents();
+  setupRemoveListeners() {
+    document.querySelectorAll(".remove-item").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        this.list = this.list.filter((item) => item.Id !== btn.dataset.id);
+        setLocalStorage(this.key, this.list);
+        updateCartCount();
+        this.init();
+      });
+    });
   }
 }

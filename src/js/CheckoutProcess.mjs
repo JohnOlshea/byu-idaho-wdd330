@@ -17,7 +17,7 @@ function packageItems(items) {
     id: item.Id,
     name: item.Name,
     price: item.FinalPrice,
-    quantity: 1,
+    quantity: item.Quantity || 1,
   }));
 }
 
@@ -38,7 +38,10 @@ export default class CheckoutProcess {
   }
 
   calculateItemSummary() {
-    this.itemTotal = this.list.reduce((sum, item) => sum + item.FinalPrice, 0);
+    this.itemTotal = this.list.reduce(
+      (sum, item) => sum + item.FinalPrice * (item.Quantity || 1),
+      0
+    );
     const numItemsEl = document.querySelector(`${this.outputSelector} #num-items`);
     const subtotalEl = document.querySelector(`${this.outputSelector} #subtotal`);
     if (numItemsEl) numItemsEl.innerText = this.list.length;
@@ -47,7 +50,11 @@ export default class CheckoutProcess {
 
   calculateOrderTotal() {
     this.tax = this.itemTotal * 0.06;
-    this.shipping = this.list.length === 0 ? 0 : 10 + (this.list.length - 1) * 2;
+    const totalQuantity = this.list.reduce(
+      (sum, item) => sum + (item.Quantity || 1),
+      0
+    );
+    this.shipping = totalQuantity === 0 ? 0 : 10 + (totalQuantity - 1) * 2;
     this.orderTotal = this.itemTotal + this.tax + this.shipping;
     this.displayOrderTotals();
   }
