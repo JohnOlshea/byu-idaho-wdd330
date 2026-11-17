@@ -53,8 +53,14 @@ export default class ProductDetails {
       p.NameWithoutBrand;
 
     const img = document.querySelector(".product-detail img");
+    // Hide it until the real image is set, so no broken icon flashes
+    img.style.visibility = "hidden";
     img.src = p.Images.PrimaryLarge;
     img.alt = p.Name;
+    // Show it only when it actually loads
+    img.onload = () => {
+      img.style.visibility = "visible";
+    };
 
     document.querySelector(".product-card__price").textContent =
       `$${p.FinalPrice}`;
@@ -72,7 +78,7 @@ export default class ProductDetails {
       const discountPercent = Math.round(
         ((p.SuggestedRetailPrice - p.FinalPrice) /
           p.SuggestedRetailPrice) *
-          100
+        100
       );
       discountEl.innerHTML = `<s>$${p.SuggestedRetailPrice}</s> <span class="discount-badge">Save ${discountPercent}%</span>`;
     } else {

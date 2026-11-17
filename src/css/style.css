@@ -448,3 +448,14 @@ footer {
 .qty-btn:hover {
   opacity: 0.85;
 }
+
+/* Reserve space for product images so page doesn't jump when they load */
+.product-card img,
+.product-detail img {
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  background-color: #f5f5f5;
+  width: 100%;
+  height: auto;
+  display: block;
+}
