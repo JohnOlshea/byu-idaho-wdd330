@@ -43,11 +43,30 @@ export default class ProductList {
     this.category = category;
     this.dataSource = dataSource;
     this.listElement = listElement;
+    this.loadingEl = document.querySelector("#loading");
+    this.errorEl = document.querySelector("#listing-error");
   }
 
   async init() {
-    const list = await this.dataSource.getData(this.category);
-    this.renderList(list);
+    // Show "Loading..." right away
+    if (this.loadingEl) this.loadingEl.classList.remove("hide");
+    if (this.errorEl) this.errorEl.classList.add("hide");
+
+    try {
+      const list = await this.dataSource.getData(this.category);
+      // Products are here - hide loading, show products
+      if (this.loadingEl) this.loadingEl.classList.add("hide");
+      this.renderList(list);
+    } catch (err) {
+      // Fetch failed - hide loading, show error
+      if (this.loadingEl) this.loadingEl.classList.add("hide");
+      if (this.errorEl) {
+        this.errorEl.textContent =
+          "Sorry, we couldn't load products right now. Please try again.";
+        this.errorEl.classList.remove("hide");
+      }
+      console.log(err);
+    }
   }
 
   renderList(list) {

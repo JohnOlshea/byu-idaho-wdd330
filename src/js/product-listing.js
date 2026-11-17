@@ -6,7 +6,8 @@ loadHeaderFooter();
 
 const category = getParam("category");
 const dataSource = new ExternalServices();
-const listElement = document.querySelector(".product-list");
+// Use ID now, not class - so we get the real <ul>, not the loading <p>
+const listElement = document.querySelector("#product-list");
 
 // Show "Top Products: Backpacks" etc.
 const categoryNameEl = document.querySelector("#category-name");
