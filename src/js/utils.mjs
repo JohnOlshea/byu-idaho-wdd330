@@ -88,19 +88,29 @@ export async function loadHeaderFooter() {
   updateCartCount();
 }
 
-export function alertMessage(message, scroll = true) {
+export function alertMessage(message, scroll = true, type = "error") {
+  // create element to hold the alert
   const alert = document.createElement("div");
+  // add a class to style the alert
+  // type = "error" (red, default) or "success" (green)
   alert.classList.add("alert");
+  if (type === "success") {
+    alert.classList.add("success");
+  }
+  // set the contents. You should have a message and an X the user can click on to remove
   alert.innerHTML = `<p>${message}</p><span>X</span>`;
 
+  // add a listener to the alert to see if they clicked on the X
+  // if they did then remove the child
   alert.addEventListener("click", function (e) {
     if (e.target.tagName === "SPAN") {
       this.remove();
     }
   });
-
+  // add the alert to the top of main
   const main = document.querySelector("main");
   main.prepend(alert);
-
+  // make sure they see the alert by scrolling to the top of the window
+  // you may not always want to do this...so default to scroll=true, but allow it to be passed in and overridden.
   if (scroll) window.scrollTo(0, 0);
 }

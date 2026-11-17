@@ -42,7 +42,8 @@ export default class ProductDetails {
 
     setLocalStorage("so-cart", cart);
     updateCartCount();
-    alertMessage(`${this.product.Name} added to cart!`, false);
+    // Success = green, not red. scroll=false so page doesn't jump to top.
+    alertMessage(`${this.product.Name} added to cart!`, false, "success");
   }
 
   renderProductDetails() {
