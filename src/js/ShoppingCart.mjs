@@ -10,7 +10,7 @@ function cartItemTemplate(item) {
   const quantity = item.Quantity || 1;
 
   return `<li class="cart-card divider">
-  <span class="remove-item" data-id="${item.Id}">X</span>
+  <button class="remove-item" data-id="${item.Id}" aria-label="Remove ${item.Name}">×</button>
   <a href="#" class="cart-card__image">
     <img src="${imageSrc}" alt="${item.Name}" />
   </a>
@@ -18,11 +18,15 @@ function cartItemTemplate(item) {
     <h2 class="card__name">${item.Name}</h2>
   </a>
   <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-  <p class="cart-card__quantity">
-    <button class="qty-btn qty-minus" data-id="${item.Id}" aria-label="Decrease quantity">−</button>
-    <span>qty: ${quantity}</span>
-    <button class="qty-btn qty-plus" data-id="${item.Id}" aria-label="Increase quantity">+</button>
-  </p>
+
+  <div class="cart-card__quantity">
+    <div class="qty-stepper">
+      <button class="qty-btn qty-minus" data-id="${item.Id}" aria-label="Decrease quantity">−</button>
+      <span class="qty-value" aria-live="polite">qty: ${quantity}</span>
+      <button class="qty-btn qty-plus" data-id="${item.Id}" aria-label="Increase quantity">+</button>
+    </div>
+  </div>
+
   <p class="cart-card__price">$${(item.FinalPrice * quantity).toFixed(2)}</p>
 </li>`;
 }
@@ -38,7 +42,6 @@ export default class ShoppingCart {
   init() {
     const list = getLocalStorage(this.key);
     this.list = Array.isArray(list) ? list : list ? [list] : [];
-    // Make sure old items have Quantity
     this.list.forEach((item) => {
       if (!item.Quantity) item.Quantity = 1;
     });
@@ -73,7 +76,6 @@ export default class ShoppingCart {
   }
 
   setupListeners() {
-    // X button - remove whole row
     document.querySelectorAll(".remove-item").forEach((btn) => {
       btn.addEventListener("click", () => {
         this.list = this.list.filter((item) => item.Id !== btn.dataset.id);
@@ -81,7 +83,6 @@ export default class ShoppingCart {
       });
     });
 
-    // + button - increase quantity by 1
     document.querySelectorAll(".qty-plus").forEach((btn) => {
       btn.addEventListener("click", () => {
         const item = this.list.find((i) => i.Id === btn.dataset.id);
@@ -92,7 +93,6 @@ export default class ShoppingCart {
       });
     });
 
-    // - button - decrease quantity by 1, remove if it hits 0
     document.querySelectorAll(".qty-minus").forEach((btn) => {
       btn.addEventListener("click", () => {
         const item = this.list.find((i) => i.Id === btn.dataset.id);
@@ -112,5 +112,17 @@ export default class ShoppingCart {
     this.calculateListTotal(this.list);
     this.renderCart(this.list);
     this.setupListeners();
+
+    // Pop animation - runs AFTER the cart is re-drawn
+    document.querySelectorAll(".qty-value").forEach((el) => {
+      el.classList.remove("qty-pop");
+      void el.offsetWidth;
+      el.classList.add("qty-pop");
+    });
+    document.querySelectorAll(".cart-card__price").forEach((el) => {
+      el.classList.remove("price-bump");
+      void el.offsetWidth;
+      el.classList.add("price-bump");
+    });
   }
 }

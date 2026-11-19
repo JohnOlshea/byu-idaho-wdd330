@@ -18,6 +18,24 @@ export default class ExternalServices {
     return data.Result;
   }
 
+  // The API searches by category, so query every category and match on name.
+  async searchProducts(term) {
+    const categories = ["tents", "backpacks", "sleeping-bags", "hammocks"];
+    const results = await Promise.allSettled(
+      categories.map(async (category) => {
+        const list = await this.getData(category);
+        return list.map((product) => ({ ...product, _category: category }));
+      })
+    );
+    const lists = results
+      .filter((r) => r.status === "fulfilled")
+      .map((r) => r.value);
+    if (lists.length === 0) throw new Error("Search request failed");
+
+    const query = term.trim().toLowerCase();
+    return lists.flat().filter((p) => p.Name.toLowerCase().includes(query));
+  }
+
   async findProductById(id) {
     const response = await fetch(`${baseURL}product/${id}`);
     const data = await convertToJson(response);

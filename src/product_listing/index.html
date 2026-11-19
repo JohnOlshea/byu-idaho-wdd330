@@ -11,9 +11,20 @@
 
 <body>
   <header class="divider" id="main-header"></header>
+  <nav id="breadcrumb" class="breadcrumb hide" aria-label="Breadcrumb"></nav>
   <main class="divider">
     <section class="products">
-      <h2>Top Products: <span id="category-name"></span></h2>
+      <h2><span id="products-title">Top Products</span>: <span id="category-name"></span></h2>
+      <div id="sort-controls" class="sort-controls hide">
+        <label for="sort">Sort by</label>
+        <select id="sort">
+          <option value="default">Default</option>
+          <option value="name-asc">Name (A-Z)</option>
+          <option value="name-desc">Name (Z-A)</option>
+          <option value="price-asc">Price (low to high)</option>
+          <option value="price-desc">Price (high to low)</option>
+        </select>
+      </div>
       <div id="loading" class="loading">
         <div class="spinner"></div>
         <p>Loading products...</p>

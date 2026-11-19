@@ -28,6 +28,52 @@ export function getParam(param) {
   return urlParams.get(param);
 }
 
+// "sleeping-bags" -> "Sleeping Bags"
+export function formatCategory(category) {
+  return category
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+// Fill and show the breadcrumb under the navbar.
+// crumbs = [{ label: "Home", href: "/index.html" }, { label: "Backpacks" }]
+// countLabel = "15 items" (optional, shown as a pill badge)
+export function setBreadcrumb(crumbs, countLabel = "") {
+  const el = document.querySelector("#breadcrumb");
+  if (!el) return;
+  el.innerHTML = "";
+
+  crumbs.forEach((crumb, i) => {
+    if (i > 0) {
+      const sep = document.createElement("span");
+      sep.className = "breadcrumb-separator";
+      sep.textContent = "›";
+      el.append(sep);
+    }
+    if (crumb.href) {
+      const a = document.createElement("a");
+      a.href = crumb.href;
+      a.textContent = crumb.label;
+      el.append(a);
+    } else {
+      const span = document.createElement("span");
+      span.className = "breadcrumb-current";
+      span.textContent = crumb.label;
+      el.append(span);
+    }
+  });
+
+  if (countLabel) {
+    const badge = document.createElement("span");
+    badge.className = "breadcrumb-count";
+    badge.textContent = countLabel;
+    el.append(badge);
+  }
+
+  el.classList.remove("hide");
+}
+
 export function renderListWithTemplate(
   templateFn,
   parentElement,
